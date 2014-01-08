@@ -14,33 +14,34 @@ print "Found dancemat!"
 
 dancemat.open()
 
-def listen_to_dancemat(data):
+def listen_to_dancemat(data):  
+  data = ''.join(map(lambda x: bin(x)[2:].zfill(8), data[5:8]))
+  print data
   print_name(data)
   
-  print map(bin, data[5:8])
   
 def print_name(data):
-  if data[7] == 32:
+  if data[18] == "1":
     print "start"
-  elif data[7] == 16:
+  if data[19] == "1":
     print "select"
-  elif data[7] == 4:
+  if data[21] == "1":
     print "x"
-  elif data[6] == 31:
+  if data[11] == "1":
     print "left"
-  elif data[7] == 1:
+  if data[23] == "1":
     print "triangle"
-  elif data[6] == 47:
+  if data[10] == "1":
     print "down"
-  elif data[7] == 2:
+  if data[22] == "1":
     print "square"
-  elif data[5] == 255:
+  if data[0] == "1":
     print "Stay Cool!"
-  elif data[6] == 79:
+  if data[9] == "1":
     print "up"
-  elif data[7] == 8:
+  if data[20] == "1":
     print "circle"
-  elif data[6] == 143:
+  if data[8] == "1":
     print "right"
 
 try:  
