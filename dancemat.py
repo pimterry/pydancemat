@@ -1,6 +1,10 @@
+import os
 import pywinusb.hid as hid
 from time import sleep
 from msvcrt import kbhit
+import hipchat
+
+hipchat_conn = hipchat.HipChat(token=os.environ['HipchatAuthToken'])
 
 all_devices = hid.find_all_hid_devices()
 
@@ -19,30 +23,37 @@ def listen_to_dancemat(data):
   print data
   print_name(data)
   
+is_dancing = False
   
 def print_name(data):
-  if data[18] == "1":
-    print "start"
-  if data[19] == "1":
-    print "select"
-  if data[21] == "1":
-    print "x"
-  if data[11] == "1":
-    print "left"
-  if data[23] == "1":
-    print "triangle"
-  if data[10] == "1":
-    print "down"
-  if data[22] == "1":
-    print "square"
-  if data[0] == "1":
-    print "Stay Cool!"
-  if data[9] == "1":
-    print "up"
-  if data[20] == "1":
-    print "circle"
-  if data[8] == "1":
-    print "right"
+  global is_dancing
+
+  if (data[0] == "1" or data[21] == "1" or data[11] == "1" or data[23] == "1" or data[10] == "1" or data[22] == "1" or data[9] == "1" or data[20] == "1" or data[8] == "1"):
+    message = ""
+    if data[21] == "1":
+      message += "x "
+    if data[11] == "1":
+      message += "left "
+    if data[23] == "1":
+      message += "triangle "
+    if data[10] == "1":
+      message += "down "
+    if data[22] == "1":
+      message += "square "
+    if data[0] == "1":
+      message += "Stay Cool! "
+    if data[9] == "1":
+      message += "up"
+    if data[20] == "1":
+      message += "circle "
+    if data[8] == "1":
+      message += "right "
+  
+    if not is_dancing:
+      hipchat_conn.method('rooms/message', method='POST', parameters={'room_id': 219073, 'from': 'Nick Golding', 'message': 'Is dancing: ' + message, 'color': 'random'})
+    is_dancing = True
+  else:
+    is_dancing = False
 
 try:  
   dancemat.set_raw_data_handler(listen_to_dancemat)
